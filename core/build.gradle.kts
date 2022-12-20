@@ -1,5 +1,3 @@
-import kotlinx.kover.api.DefaultJacocoEngine
-
 plugins {
   kotlin("jvm")
   kotlin("plugin.serialization")
@@ -13,9 +11,9 @@ plugins {
 
 sourdoughLibrary {
   githubOrg.set("bkbnio")
-  githubRepo.set("sourdough-kt")
-  libraryName.set("sourdough-domain")
-  libraryDescription.set("Sourdough Domain ❤️")
+  githubRepo.set("bouncer")
+  libraryName.set("bouncer-core")
+  libraryDescription.set("Core lib for Bouncer RBAC Enforcement")
   licenseName.set("MIT License")
   licenseUrl.set("https://mit-license.org")
   developerId.set("unredundant")
@@ -34,8 +32,4 @@ testing {
       }
     }
   }
-}
-
-kover {
-  engine.set(DefaultJacocoEngine)
 }

@@ -1,12 +1,6 @@
-rootProject.name = "sourdough-kt"
+rootProject.name = "bouncer"
 
-include("app")
-include("api")
-include("cli")
-include("client")
-include("domain")
-include("lib")
-include("persistence")
+include("core")
 
 // Feature Previews
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
