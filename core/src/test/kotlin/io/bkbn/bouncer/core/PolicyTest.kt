@@ -52,13 +52,27 @@ class PolicyTest : DescribeSpec({
       result shouldBe true
     }
   }
+  describe("ABAC Policy Tests") {
+    it("Can enforce a basic ABAC policy") {
+      // arrange
+      val publicRepo = Repository("bkbnio/bouncer", true)
+      val privateRepo = Repository("bkbnio/bouncer", false)
+
+      // act
+      val publicResult = simpleAbacPolicy.enforce(CrudAction.READ, publicRepo)
+      val privateResult = simpleAbacPolicy.enforce(CrudAction.READ, privateRepo)
+
+      // assert
+      publicResult shouldBe true
+      privateResult shouldBe false
+    }
+  }
 }) {
   companion object {
     private val adminOnlyPolicy = bouncerPolicy<User, CrudAction, Repository> {
       can(
         description = "Admins can always create repositories",
         action = CrudAction.CREATE,
-        resource = Repository::class,
         check = { user, _ -> user.roles.contains("admin") }
       )
     }
@@ -67,6 +81,10 @@ class PolicyTest : DescribeSpec({
       can("Owner can delete", CrudAction.DELETE, OrgRoleType.OWNER) { user, organization, role ->
         user.id == organization.id && user.roles.any { it.organizationId == organization.id && it.role == role }
       }
+    }
+
+    private val simpleAbacPolicy = abacPolicy<CrudAction, Repository> {
+      can("Always read public repositories", CrudAction.READ) { resource -> resource.isPublic }
     }
   }
 }
