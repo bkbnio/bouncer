@@ -2,15 +2,15 @@ package io.bkbn.bouncer.core
 
 import kotlin.reflect.KClass
 
-class Policy<E : Any, A : Any, R : Any> {
+class Policy<Actor : Any, Action : Enum<*>, Resource : Any> {
 
-  private val rules = mutableListOf<Rule<E, A, R>>()
+  private val rules = mutableListOf<Rule<Actor, Action, Resource>>()
 
-  fun can(description: String, action: A, resource: KClass<R>, check: (E, R) -> Boolean) {
+  fun can(description: String, action: Action, resource: KClass<Resource>, check: (Actor, Resource) -> Boolean) {
     rules.add(Rule(description, action, resource, check))
   }
 
-  fun enforce(entity: E, action: A, resource: R): Boolean {
+  fun enforce(entity: Actor, action: Action, resource: Resource): Boolean {
     return rules
       .filter { it.action == action }
       .any { it.check(entity, resource) }
@@ -24,8 +24,10 @@ class Policy<E : Any, A : Any, R : Any> {
   )
 }
 
-fun <E : Any, A : Any, R : Any> bouncerPolicy(init: Policy<E, A, R>.() -> Unit): Policy<E, A, R> {
-  val policy = Policy<E, A, R>()
+fun <Actor : Any, Action : Enum<*>, Resource : Any> bouncerPolicy(
+  init: Policy<Actor, Action, Resource>.() -> Unit
+): Policy<Actor, Action, Resource> {
+  val policy = Policy<Actor, Action, Resource>()
   policy.init()
   return policy
 }
