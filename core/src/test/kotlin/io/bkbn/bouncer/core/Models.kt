@@ -7,7 +7,7 @@ enum class CrudAction {
   DELETE
 }
 
-data class Repository(val name: String)
+data class Repository(val name: String, val isPublic: Boolean = false)
 
 data class User(val name: String, val roles: List<String>)
 
