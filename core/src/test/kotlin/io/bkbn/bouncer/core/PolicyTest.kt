@@ -39,6 +39,19 @@ class PolicyTest : DescribeSpec({
       result shouldBe false
     }
   }
+  describe("RBAC Policy Tests") {
+    it("Can enforce a basic RBAC Policy") {
+      // arrange
+      val org = Org(1, "Acme")
+      val orgUser = OrgUser(1, "Bob", listOf(OrgRole(1, OrgRoleType.OWNER)))
+
+      // act
+      val result = simpleRbacPolicy.enforce(orgUser, CrudAction.DELETE, OrgRoleType.OWNER, org)
+
+      // assert
+      result shouldBe true
+    }
+  }
 }) {
   companion object {
     private val adminOnlyPolicy = bouncerPolicy<User, CrudAction, Repository> {
@@ -48,6 +61,12 @@ class PolicyTest : DescribeSpec({
         resource = Repository::class,
         check = { user, _ -> user.roles.contains("admin") }
       )
+    }
+
+    private val simpleRbacPolicy = rbacPolicy<OrgUser, CrudAction, OrgRoleType, Org> {
+      can("Owner can delete", CrudAction.DELETE, OrgRoleType.OWNER) { user, organization, role ->
+        user.id == organization.id && user.roles.any { it.organizationId == organization.id && it.role == role }
+      }
     }
   }
 }
