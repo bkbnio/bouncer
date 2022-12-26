@@ -1,30 +1,30 @@
 package io.bkbn.bouncer.core
 
-class AbacPolicy<Action : Enum<*>, Resource : Any> {
+class AbacPolicy<Actor: Any, Action : Enum<*>, Resource : Any> {
 
-  private val rules = mutableListOf<Rule<Action, Resource>>()
+  private val rules = mutableListOf<Rule<Actor, Action, Resource>>()
 
-  fun can(description: String, action: Action, check: (Resource) -> Boolean) {
+  fun can(description: String, action: Action, check: (Actor, Resource) -> Boolean) {
     rules.add(Rule(description, action, check))
   }
 
-  fun enforce(action: Action, resource: Resource): Boolean {
+  fun enforce(actor: Actor, action: Action, resource: Resource): Boolean {
     return rules
       .filter { it.action == action }
-      .any { it.check(resource) }
+      .any { it.check(actor, resource) }
   }
 
-  private data class Rule<Action : Enum<*>, Resource : Any>(
+  private data class Rule<Actor: Any, Action : Enum<*>, Resource : Any>(
     val description: String,
     val action: Action,
-    val check: (Resource) -> Boolean
+    val check: (Actor, Resource) -> Boolean
   )
 }
 
-fun <Action : Enum<*>, Resource : Any> abacPolicy(
-  init: AbacPolicy<Action, Resource>.() -> Unit
-): AbacPolicy<Action, Resource> {
-  val policy = AbacPolicy<Action, Resource>()
+fun <Actor: Any, Action : Enum<*>, Resource : Any> abacPolicy(
+  init: AbacPolicy<Actor, Action, Resource>.() -> Unit
+): AbacPolicy<Actor, Action, Resource> {
+  val policy = AbacPolicy<Actor, Action, Resource>()
   policy.init()
   return policy
 }

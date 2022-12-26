@@ -1,5 +1,7 @@
 package io.bkbn.bouncer.core
 
+import java.util.UUID
+
 enum class CrudAction {
   CREATE,
   READ,
@@ -9,7 +11,7 @@ enum class CrudAction {
 
 data class Repository(val name: String, val isPublic: Boolean = false)
 
-data class User(val name: String, val roles: List<String>)
+data class User(val name: String, val roles: List<String> = emptyList(), val id: UUID = UUID.randomUUID())
 
 enum class OrgRoleType {
   OWNER,
