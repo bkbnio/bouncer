@@ -1,6 +1,6 @@
 package io.bkbn.bouncer.core
 
-class AbacPolicy<Actor: Any, Action : Enum<*>, Resource : Any> {
+class AbacPolicy<Actor: Any, Action : Enum<*>, Resource : Any> : BouncerPolicy {
 
   private val rules = mutableListOf<Rule<Actor, Action, Resource>>()
 

@@ -2,7 +2,7 @@ package io.bkbn.bouncer.core
 
 import kotlin.reflect.KClass
 
-class RbacPolicy<Actor : Any, Action : Enum<*>, Role : Enum<*>, Resource : Any> {
+class RbacPolicy<Actor : Any, Action : Enum<*>, Role : Enum<*>, Resource : Any> : BouncerPolicy {
 
   private val rules = mutableListOf<Rule<Actor, Action, Role, Resource>>()
 
